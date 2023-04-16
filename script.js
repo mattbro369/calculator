@@ -28,4 +28,16 @@ function operate(a, b, operator) {
 	}
 }
 
-console.log(operate(5, 10, "/"));
+const display = document.querySelector("#display");
+const eventField = document.querySelector("#button-container");
+eventField.addEventListener("click", logClick);
+
+function logClick(e) {
+	if (e.target.classList.contains("clear")) {
+		display.innerText = "0";
+	} else if (display.innerText === "0" && e.target.value !== "0") {
+		display.innerText = e.target.innerText;
+	} else {
+		display.innerText += e.target.innerText;
+	}
+}
