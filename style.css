@@ -1,5 +1,38 @@
+html,
 body {
+	min-width: 400px;
+	min-height: 500px;
+}
+
+body,
+body > * {
 	margin: 0;
 	padding: 0;
 	box-sizing: border-box;
+}
+
+#wrapper {
+	height: 100vh;
+	min-width: 400px;
+	min-height: 500px;
+	border: 2px solid blue;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+#calculator-outer {
+	width: 400px;
+	height: 500px;
+	border: 1px solid red;
+}
+
+#display {
+	margin: 1em;
+	padding-right: 5px;
+	border: 1px dashed purple;
+	height: 25%;
+	display: flex;
+	justify-content: flex-end;
+	align-items: flex-end;
 }
