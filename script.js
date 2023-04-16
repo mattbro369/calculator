@@ -1,3 +1,24 @@
+const display = document.querySelector("#display");
+const eventField = document.querySelector("#button-container");
+eventField.addEventListener("click", logClick);
+
+function logClick(e) {
+	if (e.target.classList.contains("button")) {
+		if (e.target.classList.contains("clear")) {
+			display.innerText = "0";
+		} else if (e.target.classList.contains("delete")) {
+			display.innerText = display.innerText.slice(0, -1);
+			if (display.innerText.length === 0) {
+				display.innerText = "0";
+			}
+		} else if (display.innerText === "0" && e.target.value !== "0") {
+			display.innerText = e.target.innerText;
+		} else {
+			display.innerText += e.target.innerText;
+		}
+	}
+}
+
 let a, b, operator;
 
 function add(a, b) {
@@ -25,19 +46,5 @@ function operate(a, b, operator) {
 			return multiply(a, b);
 		case "/":
 			return divide(a, b);
-	}
-}
-
-const display = document.querySelector("#display");
-const eventField = document.querySelector("#button-container");
-eventField.addEventListener("click", logClick);
-
-function logClick(e) {
-	if (e.target.classList.contains("clear")) {
-		display.innerText = "0";
-	} else if (display.innerText === "0" && e.target.value !== "0") {
-		display.innerText = e.target.innerText;
-	} else {
-		display.innerText += e.target.innerText;
 	}
 }
