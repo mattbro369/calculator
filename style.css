@@ -24,6 +24,8 @@ body > * {
 #calculator-outer {
 	width: 400px;
 	height: 500px;
+	display: flex;
+	flex-direction: column;
 	border: 1px solid red;
 }
 
@@ -35,4 +37,26 @@ body > * {
 	display: flex;
 	justify-content: flex-end;
 	align-items: flex-end;
+}
+
+#button-container {
+	display: grid;
+	grid-template-columns: repeat(4, 1fr);
+	height: 380px;
+	margin: 1em;
+	margin-top: 0;
+	padding: 0.3em 0;
+	gap: 0.3em;
+	border: 1px solid orangered;
+}
+
+.button {
+	border: 1px solid royalblue;
+	border-radius: 8%;
+	text-align: center;
+}
+
+.equals {
+	grid-column-start: 3;
+	grid-column-end: 5;
 }
