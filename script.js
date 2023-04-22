@@ -1,67 +1,128 @@
 const display = document.querySelector("#display");
+const displayInitial = document.querySelector("#initial");
 const eventField = document.querySelector("#button-container");
+const displaySecond = document.createElement("div");
 eventField.addEventListener("click", logClick);
-display.innerText = "0";
+displayInitial.innerText = "0";
 
-const dec = document.querySelector(".decimal");
+let numbersArr = [];
+let operatorsArr = [];
 let decimalEntered = false;
-let a, b, operator;
+let operatorEntered = false;
+let number;
+
+// TODO SPLIT STRING FROM DISPLAY INTO ARRAY AT THE OPERATORS
 
 function logClick(e) {
 	const button = e.target;
+
 	if (e.target.classList.contains("button")) {
 		switch (true) {
 			case button.classList.contains("clear"):
-				display.innerText = "0";
-				decimalEntered = false;
+				clearDisplay();
 				break;
 			case button.classList.contains("delete"):
-				if (display.innerText.charAt(display.innerText.length - 1) === ".") {
-					display.innerText = display.innerText.slice(0, -1) || "0";
+				if (
+					displayInitial.innerText.charAt(
+						displayInitial.innerText.length - 1
+					) === "."
+				) {
+					removeLastChar();
 					decimalEntered = false;
+				} else if (
+					checkOperatorArr(
+						operatorsArr,
+						displayInitial.innerText.charAt(displayInitial.innerText.length - 1)
+					)
+				) {
+					removeLastChar();
+					operatorEntered = false;
 				} else {
-					display.innerText = display.innerText.slice(0, -1) || "0";
+					removeLastChar();
 				}
 				break;
 			case button.innerText === ".":
 				if (!decimalEntered) {
-					display.innerText += button.innerText;
+					displayInitial.innerText += button.innerText;
 					decimalEntered = true;
 				}
 				break;
-			// case button.value === "." && display.innerText === "0":
-			// 	display.innerText = "0.";
-			// 	break;
-			case display.innerText === "0" && button.value !== "0":
-				display.innerText = button.innerText;
+			case button.classList.contains("operator"):
+				if (!operatorEntered) {
+					getNumber();
+					getOperator(button);
+					displayInitial.innerText += button.innerText;
+					operatorEntered = true;
+				}
+				break;
+			case displayInitial.innerText === "0" && button.value !== "0":
+				displayInitial.innerText = button.innerText;
+				break;
+			case button.classList.contains("equals"):
+				if (displayInitial.innerText === "0") return;
+				if (numbers.length < 2) return;
+				operate();
 				break;
 			default:
-				display.innerText += button.innerText;
+				displayInitial.innerText += button.innerText;
+				operatorEntered = false;
+				decimalEntered = false;
 		}
 	} else return;
 }
 
-function operate(a, b, operator) {
+function operate() {
+	console.log("working");
+
 	switch (operator) {
 		case "+":
-			return add(a, b);
+			return add(numbers[0], numbers[1]);
 		case "-":
-			return subtract(a, b);
+			return subtract(numbers[0], numbers[1]);
 		case "*":
-			return multiply(a, b);
+			return multiply(numbers[0], numbers[1]);
 		case "/":
-			return divide(a, b);
+			return divide(numbers[0], numbers[1]);
 	}
+}
+
+function clearDisplay() {
+	displayInitial.innerText = "0";
+	displaySecond.innerText = "";
+	decimalEntered = false;
+	operatorEntered = false;
+	numbers = [];
+}
+
+function removeLastChar() {
+	displayInitial.innerText = displayInitial.innerText.slice(0, -1) || "0";
+}
+
+function getNumber() {
+	number = parseInt(displayInitial.innerText);
+	numbersArr.push(number);
+}
+
+function getOperator(operator) {
+	operatorsArr.push(operator.innerText);
+}
+
+function addInnerDisplay() {
+	display.insertBefore(displaySecond, displayInitial);
+	displaySecond.innerText = `${numbers[0]} ${operator}`;
+	displayInitial.innerText = "0";
+}
+
+function checkOperatorArr(array, char) {
+	return array.some((arrayItem) => char === arrayItem);
 }
 
 function add(a, b) {
 	return a + b;
 }
-
 function subtract(a, b) {
 	return a - b;
 }
-
 function multiply(a, b) {
 	return a * b;
 }
