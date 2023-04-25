@@ -60,8 +60,9 @@ function logClick(e) {
 				break;
 			case button.classList.contains("equals"):
 				if (displayInitial.innerText === "0") return;
-				if (numbers.length < 2) return;
-				operate();
+				if (numbersArr.length < 1) return;
+				console.log(proto());
+				// operate();
 				break;
 			default:
 				displayInitial.innerText += button.innerText;
@@ -85,47 +86,78 @@ function operate() {
 			return divide(numbers[0], numbers[1]);
 	}
 }
-
 function clearDisplay() {
 	displayInitial.innerText = "0";
 	displaySecond.innerText = "";
 	decimalEntered = false;
 	operatorEntered = false;
-	numbers = [];
+	numbersArr = [];
+	operatorsArr = [];
 }
-
 function removeLastChar() {
 	displayInitial.innerText = displayInitial.innerText.slice(0, -1) || "0";
 }
-
 function getNumber() {
 	number = parseInt(displayInitial.innerText);
 	numbersArr.push(number);
 }
-
 function getOperator(operator) {
 	operatorsArr.push(operator.innerText);
 }
-
 function addInnerDisplay() {
 	display.insertBefore(displaySecond, displayInitial);
 	displaySecond.innerText = `${numbers[0]} ${operator}`;
 	displayInitial.innerText = "0";
 }
-
 function checkOperatorArr(array, char) {
 	return array.some((arrayItem) => char === arrayItem);
 }
-
 function add(a, b) {
+	console.log(a + b);
 	return a + b;
 }
 function subtract(a, b) {
+	console.log(a - b);
 	return a - b;
 }
 function multiply(a, b) {
+	console.log(a * b);
 	return a * b;
 }
 function divide(a, b) {
+	console.log(a / b);
 	return a / b;
+}
+
+// Prototype
+function proto() {
+	operatorsArr = displayInitial.innerText.split(/\d/g);
+	operatorsArr = operatorsArr.filter((item) => item !== "");
+	numbersArr = displayInitial.innerText.split(/[+*\/-]/gm);
+	numbersArr = numbersArr.map(Number);
+	console.log(numbersArr);
+	console.log(operatorsArr);
+
+	// OPERATING SWITCH STATEMENT - Does not function fully - Will probably be replaced in future by more efficient method
+	//TODO - Make operator take more than 2 numbers
+	//TODO - Make sure it can handle multiple operators
+	//TODO - Array.reduce might be useful here ^^
+
+	switch (true) {
+		case operatorsArr[0] === "+":
+			add(numbersArr[0], numbersArr[1]);
+			break;
+		case operatorsArr[0] === "-":
+			subtract(numbersArr[0], numbersArr[1]);
+			break;
+		case operatorsArr[0] === "*":
+			multiply(numbersArr[0], numbersArr[1]);
+			break;
+		case operatorsArr[0] === "/":
+			divide(numbersArr[0], numbersArr[1]);
+			break;
+		default:
+			console.error("no numbers input");
+			break;
+	}
 }
