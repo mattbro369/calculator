@@ -6,8 +6,8 @@ eventField.addEventListener("click", logClick);
 displayInitial.innerText = "0";
 
 let decimalEntered = false;
-let operatorEntered = false;
-let a, b, operator;
+let a, b, operator, answer;
+let operatorArr = [];
 
 function logClick(e) {
 	const button = e.target;
@@ -18,60 +18,89 @@ function logClick(e) {
 				clearDisplay();
 				break;
 			case button.classList.contains("delete"):
+				if (displayInitial.innerText.charAt(0) === "=") return;
 				if (displayInitial.innerText !== "0") removeLastChar();
 				if (displayInitial.innerText.length < 1) {
 					displayInitial.innerText = "0";
 				}
 				break;
 			case button.innerText === ".":
+				if (displayInitial.innerText.charAt(0) === "=") return;
 				if (!decimalEntered) {
 					displayInitial.innerText += button.innerText;
 					decimalEntered = true;
 				}
 				break;
 			case button.classList.contains("operator"):
-				if (!operatorEntered) {
+				if (operatorArr.length === 0) {
 					getNumber();
-					displayInitial.innerText += button.innerText;
-					operatorEntered = true;
 					getOperator(button);
+					displayInitial.innerText += button.innerText;
 					addInnerDisplay();
-					operatorEntered = false;
+					displaySecond.innerText = `${a} ${operator}`;
+					displayInitial.innerText = "0";
+					decimalEntered = false;
+				} else if (operatorArr.length === 1) {
+					getOperator(button);
+					getNumber();
+					operate(operatorArr);
+					displaySecond.innerText = `${a} ${operatorArr[0]}`;
+					displayInitial.innerText = "0";
 					decimalEntered = false;
 				}
+
 				break;
 			case displayInitial.innerText === "0" && button.value !== "0":
 				displayInitial.innerText = button.innerText;
 				break;
 			case button.classList.contains("equals"):
-				if (displayInitial.innerText === "0") return;
+				if (
+					displayInitial.innerText === "0" ||
+					displayInitial.innerText.charAt(0) === "=" ||
+					operatorArr.length === 0
+				)
+					return;
 				getNumber();
 				operate(operator);
 				displaySecond.innerText += " " + displayInitial.innerText;
-				displayInitial.innerText = a;
+				displayInitial.innerText = "=" + a;
 				decimalEntered = false;
+				operatorArr = [];
 				break;
 			default:
-				displayInitial.innerText += button.innerText;
-				operatorEntered = false;
+				if (displayInitial.innerText.charAt(0) === "=") {
+					clearDisplay();
+					displayInitial.innerText = button.innerText;
+				} else {
+					displayInitial.innerText += button.innerText;
+				}
 		}
 	} else return;
 }
 
-function operate(operator) {
+function operate(operatorArr) {
 	switch (true) {
-		case operator === "+":
-			a += b;
+		case operatorArr[0] === "+":
+			answer = a + b;
 			break;
-		case operator === "-":
-			a -= b;
+		case operatorArr[0] === "-":
+			answer = a - b;
 			break;
-		case operator === "*":
-			a *= b;
+		case operatorArr[0] === "*":
+			answer = a * b;
 			break;
-		case operator === "/":
-			a /= b;
+		case operatorArr[0] === "/":
+			answer = a / b;
 			break;
+	}
+	a = answer;
+	b = undefined;
+	answer = undefined;
+
+	if (operatorArr.length > 1) {
+		operatorArr.shift();
+	} else {
+		operatorArr = [];
 	}
 }
 
@@ -79,10 +108,11 @@ function clearDisplay() {
 	displayInitial.innerText = "0";
 	displaySecond.innerText = "";
 	decimalEntered = false;
-	operatorEntered = false;
 	a = undefined;
 	b = undefined;
+	answer = undefined;
 	operator = "";
+	operatorArr = [];
 }
 
 function removeLastChar() {
@@ -96,7 +126,6 @@ function removeLastChar() {
 			break;
 		case finalChar === "+" || "-" || "*" || "/":
 			displayInitial.innerText = displayInitial.innerText.slice(0, -1);
-			operatorEntered = false;
 			break;
 		default:
 			displayInitial.innerText = displayInitial.innerText.slice(0, -1);
@@ -112,12 +141,11 @@ function getNumber() {
 	}
 }
 
-function getOperator() {
-	operator = displayInitial.innerText.slice(-1);
+function getOperator(button) {
+	operator = button.innerText;
+	operatorArr.push(operator);
 }
 
 function addInnerDisplay() {
 	display.insertBefore(displaySecond, displayInitial);
-	displaySecond.innerText = `${a} ${operator}`;
-	displayInitial.innerText = "0";
 }
