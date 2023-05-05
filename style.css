@@ -57,7 +57,7 @@ body > * {
 	text-align: center;
 }
 
-.equals {
+#equals {
 	grid-column-start: 3;
 	grid-column-end: 5;
 }
