@@ -1,4 +1,3 @@
-//TODO There is an error which fires for button.classList
 //TODO Fully check button functionality and click func works
 //TODO CSS TIME BABY
 
@@ -9,7 +8,9 @@ const displaySecond = document.createElement("div");
 eventField.addEventListener("click", logClick);
 window.addEventListener("keydown", (event) => {
 	logPress(event);
-	logClick(event, button);
+	if (button !== undefined) {
+		logClick(event, button);
+	}
 });
 displayInitial.innerText = "0";
 
@@ -20,7 +21,6 @@ let button;
 
 function logPress(event) {
 	let key = event.code;
-	console.log(key);
 
 	switch (key) {
 		case "Numpad0":
@@ -87,9 +87,14 @@ function logPress(event) {
 			key = document.getElementById("delete");
 			break;
 		default:
-			break;
+			key = undefined;
+			return;
 	}
-	button = key;
+	if (key === undefined) {
+		return;
+	} else {
+		button = key;
+	}
 	return button;
 }
 
@@ -97,6 +102,7 @@ function logClick(e, button) {
 	if (!logPress(e) && e.target.classList.contains("button")) {
 		button = e.target;
 	}
+	if (button === undefined) return;
 
 	switch (true) {
 		case button.id === "clear":
@@ -135,22 +141,25 @@ function logClick(e, button) {
 			}
 
 			break;
-		case displayInitial.innerText === "0" && button.value !== "0":
-			displayInitial.innerText = button.innerText;
-			break;
+		// case displayInitial.innerText === "0" && button.innerText !== "0":
+		// 	displayInitial.innerText = button.innerText;
+		// 	break;
 		case button.id === "equals":
 			if (
-				displayInitial.innerText === "0" ||
 				displayInitial.innerText.charAt(0) === "=" ||
 				operatorArr.length === 0
 			)
 				return;
+
 			getNumber();
 			operate(operator);
 			displaySecond.innerText += " " + displayInitial.innerText;
 			displayInitial.innerText = "=" + a;
 			decimalEntered = false;
 			operatorArr = [];
+			break;
+		case displayInitial.innerText === "0" && button.innerText !== "0":
+			displayInitial.innerText = button.innerText;
 			break;
 		default:
 			if (displayInitial.innerText.charAt(0) === "=") {
@@ -174,6 +183,9 @@ function operate(operatorArr) {
 			answer = a * b;
 			break;
 		case operatorArr[0] === "/":
+			if (b === 0) {
+				console.error("Dividing by 0 is undefined");
+			}
 			answer = a / b;
 			break;
 	}
