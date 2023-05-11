@@ -1,4 +1,6 @@
 //TODO Fully check button functionality and click func works
+//TODO ADD REGEX TO REPLACE '*' WITH 'x', '/'
+//TODO Add functionality for the main keyboard operators
 //TODO CSS TIME BABY
 
 const display = document.querySelector("#display");
@@ -70,12 +72,15 @@ function logPress(event) {
 			key = document.getElementById("add");
 			break;
 		case "NumpadSubtract":
+		case "Minus":
 			key = document.getElementById("subtract");
 			break;
 		case "NumpadDivide":
+		case "Slash":
 			key = document.getElementById("divide");
 			break;
 		case "NumpadDecimal":
+		case "Period":
 			key = document.getElementById("decimal");
 			break;
 		case "NumpadEnter":
@@ -189,7 +194,7 @@ function operate(operatorArr) {
 			answer = a / b;
 			break;
 	}
-	a = answer;
+	a = Number(answer.toFixed(3));
 	b = undefined;
 	answer = undefined;
 
@@ -231,9 +236,17 @@ function removeLastChar() {
 
 function getNumber() {
 	if (a === undefined) {
-		a = parseInt(displayInitial.innerText);
+		if (displayInitial.innerText.includes(".")) {
+			a = parseFloat(displayInitial.innerText);
+		} else {
+			a = parseInt(displayInitial.innerText);
+		}
 	} else {
-		b = parseInt(displayInitial.innerText);
+		if (displayInitial.innerText.includes(".")) {
+			b = parseFloat(displayInitial.innerText);
+		} else {
+			b = parseInt(displayInitial.innerText);
+		}
 	}
 }
 
