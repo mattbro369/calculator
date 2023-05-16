@@ -1,6 +1,3 @@
-//TODO Fully check button functionality and click func works
-//TODO ADD REGEX TO REPLACE '*' WITH 'x', '/'
-//TODO Add functionality for the main keyboard operators
 //TODO CSS TIME BABY
 
 const display = document.querySelector("#display");
@@ -12,6 +9,7 @@ window.addEventListener("keydown", (event) => {
 	logPress(event);
 	if (button !== undefined) {
 		logClick(event, button);
+		button = undefined;
 	}
 });
 displayInitial.innerText = "0";
@@ -20,6 +18,7 @@ let decimalEntered = false;
 let a, b, operator, answer;
 let operatorArr = [];
 let button;
+//REGEX PROTOTYPE TO REPLACE OPERATORS
 
 function logPress(event) {
 	let key = event.code;
@@ -58,7 +57,7 @@ function logPress(event) {
 			key = document.getElementById("7");
 			break;
 		case "Numpad8":
-		case "Digit8":
+		case !event.shiftKey && "Digit8":
 			key = document.getElementById("8");
 			break;
 		case "Numpad9":
@@ -66,9 +65,11 @@ function logPress(event) {
 			key = document.getElementById("9");
 			break;
 		case "NumpadMultiply":
+		case event.shiftKey && "Digit8":
 			key = document.getElementById("multiply");
 			break;
 		case "NumpadAdd":
+		case event.shiftKey && "Equal":
 			key = document.getElementById("add");
 			break;
 		case "NumpadSubtract":
@@ -77,6 +78,7 @@ function logPress(event) {
 			break;
 		case "NumpadDivide":
 		case "Slash":
+			event.preventDefault();
 			key = document.getElementById("divide");
 			break;
 		case "NumpadDecimal":
@@ -85,15 +87,18 @@ function logPress(event) {
 			break;
 		case "NumpadEnter":
 		case "Enter":
+		case "Equal":
 			key = document.getElementById("equals");
 			break;
-		case "Backspace":
-		case "Delete":
+		case !event.shiftKey && "Backspace":
+		case !event.shiftKey && "Delete":
 			key = document.getElementById("delete");
 			break;
+		case event.shiftKey && "Backspace":
+		case event.shiftKey && "Delete":
+			clearDisplay();
 		default:
 			key = undefined;
-			return;
 	}
 	if (key === undefined) {
 		return;
@@ -131,31 +136,41 @@ function logClick(e, button) {
 			if (operatorArr.length === 0) {
 				getNumber();
 				getOperator(button);
-				displayInitial.innerText += button.innerText;
+				let mathOperator = operator;
+				if (operator === "*") {
+					mathOperator = "×";
+				} else if (operator === "/") {
+					mathOperator = "÷";
+				}
+				displayInitial.innerText += mathOperator;
 				addInnerDisplay();
-				displaySecond.innerText = `${a} ${operator}`;
+				displaySecond.innerText = `${a} ${mathOperator}`;
 				displayInitial.innerText = "0";
 				decimalEntered = false;
-			} else if (operatorArr.length === 1) {
+			} else if (operatorArr.length === 1 && displayInitial.innerText === "0") {
 				getOperator(button);
+			} else if (operatorArr.length === 1 && displayInitial.innerText !== "0") {
 				getNumber();
 				operate(operatorArr);
-				displaySecond.innerText = `${a} ${operatorArr[0]}`;
-				displayInitial.innerText = "0";
-				decimalEntered = false;
+				getOperator(button);
 			}
 
+			if (operatorArr[0] === "*") {
+				displaySecond.innerText = `${a} ×`;
+			} else if (operatorArr[0] === "/") {
+				displaySecond.innerText = `${a} ÷`;
+			} else {
+				displaySecond.innerText = `${a} ${operatorArr[0]}`;
+			}
+			displayInitial.innerText = "0";
+			decimalEntered = false;
 			break;
-		// case displayInitial.innerText === "0" && button.innerText !== "0":
-		// 	displayInitial.innerText = button.innerText;
-		// 	break;
 		case button.id === "equals":
 			if (
 				displayInitial.innerText.charAt(0) === "=" ||
 				operatorArr.length === 0
 			)
 				return;
-
 			getNumber();
 			operate(operator);
 			displaySecond.innerText += " " + displayInitial.innerText;
@@ -197,6 +212,7 @@ function operate(operatorArr) {
 	a = Number(answer.toFixed(3));
 	b = undefined;
 	answer = undefined;
+	button = undefined;
 
 	if (operatorArr.length > 1) {
 		operatorArr.shift();
@@ -212,6 +228,8 @@ function clearDisplay() {
 	a = undefined;
 	b = undefined;
 	answer = undefined;
+	key = undefined;
+	button = undefined;
 	operator = "";
 	operatorArr = [];
 }
@@ -252,7 +270,11 @@ function getNumber() {
 
 function getOperator(button) {
 	operator = button.innerText;
-	operatorArr.push(operator);
+	if (operatorArr.length === 1) {
+		operatorArr[0] = operator;
+	} else {
+		operatorArr.push(operator);
+	}
 }
 
 function addInnerDisplay() {
