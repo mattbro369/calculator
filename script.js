@@ -18,7 +18,6 @@ let decimalEntered = false;
 let a, b, operator, answer;
 let operatorArr = [];
 let button;
-//REGEX PROTOTYPE TO REPLACE OPERATORS
 
 function logPress(event) {
 	let key = event.code;
@@ -26,84 +25,82 @@ function logPress(event) {
 	switch (key) {
 		case "Numpad0":
 		case "Digit0":
-			key = document.getElementById("0");
+			button = document.getElementById("0");
 			break;
 		case "Numpad1":
 		case "Digit1":
-			key = document.getElementById("1");
+			button = document.getElementById("1");
 			break;
 		case "Numpad2":
 		case "Digit2":
-			key = document.getElementById("2");
+			button = document.getElementById("2");
 			break;
 		case "Numpad3":
 		case "Digit3":
-			key = document.getElementById("3");
+			button = document.getElementById("3");
 			break;
 		case "Numpad4":
 		case "Digit4":
-			key = document.getElementById("4");
+			button = document.getElementById("4");
 			break;
 		case "Numpad5":
 		case "Digit5":
-			key = document.getElementById("5");
+			button = document.getElementById("5");
 			break;
 		case "Numpad6":
 		case "Digit6":
-			key = document.getElementById("6");
+			button = document.getElementById("6");
 			break;
 		case "Numpad7":
 		case "Digit7":
-			key = document.getElementById("7");
+			button = document.getElementById("7");
 			break;
 		case "Numpad8":
 		case !event.shiftKey && "Digit8":
-			key = document.getElementById("8");
+			button = document.getElementById("8");
 			break;
 		case "Numpad9":
 		case "Digit9":
-			key = document.getElementById("9");
+			button = document.getElementById("9");
 			break;
 		case "NumpadMultiply":
 		case event.shiftKey && "Digit8":
-			key = document.getElementById("multiply");
+			button = document.getElementById("multiply");
 			break;
 		case "NumpadAdd":
 		case event.shiftKey && "Equal":
-			key = document.getElementById("add");
+			button = document.getElementById("add");
 			break;
 		case "NumpadSubtract":
 		case "Minus":
-			key = document.getElementById("subtract");
+			button = document.getElementById("subtract");
 			break;
 		case "NumpadDivide":
 		case "Slash":
 			event.preventDefault();
-			key = document.getElementById("divide");
+			button = document.getElementById("divide");
 			break;
 		case "NumpadDecimal":
 		case "Period":
-			key = document.getElementById("decimal");
+			button = document.getElementById("decimal");
 			break;
 		case "NumpadEnter":
 		case "Enter":
 		case "Equal":
-			key = document.getElementById("equals");
+			button = document.getElementById("equals");
 			break;
 		case !event.shiftKey && "Backspace":
 		case !event.shiftKey && "Delete":
-			key = document.getElementById("delete");
+			button = document.getElementById("delete");
 			break;
 		case event.shiftKey && "Backspace":
 		case event.shiftKey && "Delete":
 			clearDisplay();
 		default:
-			key = undefined;
+			button = undefined;
 	}
-	if (key === undefined) {
+	if (button === undefined) {
 		return;
-	} else {
-		button = key;
 	}
 	return button;
 }
@@ -120,9 +117,19 @@ function logClick(e, button) {
 			break;
 		case button.id === "delete":
 			if (displayInitial.innerText.charAt(0) === "=") return;
-			if (displayInitial.innerText !== "0") removeLastChar();
+			if (displayInitial.innerText !== "0") removeLastChar(displayInitial);
 			if (displayInitial.innerText.length < 1) {
 				displayInitial.innerText = "0";
+			}
+			if (
+				displaySecond.innerText.length > 1 &&
+				displayInitial.innerText === "0"
+			) {
+				removeLastChar(displaySecond);
+				displayInitial.innerText = displaySecond.innerText;
+				displaySecond.innerText = "";
+				operatorArr.shift();
+				a = undefined;
 			}
 			break;
 		case button.id === "decimal":
@@ -234,20 +241,18 @@ function clearDisplay() {
 	operatorArr = [];
 }
 
-function removeLastChar() {
-	let finalChar = displayInitial.innerText.charAt(
-		displayInitial.innerText.length - 1
-	);
+function removeLastChar(e) {
+	let finalChar = e.innerText.charAt(e.innerText.length - 1);
 	switch (true) {
 		case finalChar === ".":
-			displayInitial.innerText = displayInitial.innerText.slice(0, -1);
+			e.innerText = e.innerText.slice(0, -1);
 			decimalEntered = false;
 			break;
 		case finalChar === "+" || "-" || "*" || "/":
-			displayInitial.innerText = displayInitial.innerText.slice(0, -1);
+			e.innerText = e.innerText.slice(0, -1);
 			break;
 		default:
-			displayInitial.innerText = displayInitial.innerText.slice(0, -1);
+			e.innerText = e.innerText.slice(0, -1);
 			break;
 	}
 }
@@ -280,3 +285,23 @@ function getOperator(button) {
 function addInnerDisplay() {
 	display.insertBefore(displaySecond, displayInitial);
 }
+
+// KEEPING OLD REMOVELASTCHAR FUNCTION INCASE OF ERRORS
+
+// function removeLastChar() {
+// 	let finalChar = displayInitial.innerText.charAt(
+// 		displayInitial.innerText.length - 1
+// 	);
+// 	switch (true) {
+// 		case finalChar === ".":
+// 			displayInitial.innerText = displayInitial.innerText.slice(0, -1);
+// 			decimalEntered = false;
+// 			break;
+// 		case finalChar === "+" || "-" || "*" || "/":
+// 			displayInitial.innerText = displayInitial.innerText.slice(0, -1);
+// 			break;
+// 		default:
+// 			displayInitial.innerText = displayInitial.innerText.slice(0, -1);
+// 			break;
+// 	}
+// }
