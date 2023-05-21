@@ -44,7 +44,7 @@ function logPress(event) {
 			button = document.getElementById("4");
 			break;
 		case "Numpad5":
-		case "Digit5":
+		case !event.shiftKey && "Digit5":
 			button = document.getElementById("5");
 			break;
 		case "Numpad6":
@@ -80,6 +80,9 @@ function logPress(event) {
 			event.preventDefault();
 			button = document.getElementById("divide");
 			break;
+		case event.shiftKey && "Digit5":
+			button = document.getElementById("percent");
+			break;
 		case "NumpadDecimal":
 		case "Period":
 			button = document.getElementById("decimal");
@@ -110,6 +113,7 @@ function logClick(e, button) {
 		button = e.target;
 	}
 	if (button === undefined) return;
+	console.log(button);
 
 	switch (true) {
 		case button.id === "clear":
@@ -172,6 +176,20 @@ function logClick(e, button) {
 			displayInitial.innerText = "0";
 			decimalEntered = false;
 			break;
+
+		//PROTO PERCENT FUNC
+		case button.id === "percent":
+			displayInitial.innerText += "%";
+			getNumber();
+			if (a !== undefined) {
+				b = (b / 100) * a;
+			} else {
+				a = a / 100;
+			}
+			console.log(a);
+			console.log(b);
+			break;
+		//END OF PROTO
 		case button.id === "equals":
 			if (
 				displayInitial.innerText.charAt(0) === "=" ||
@@ -181,12 +199,16 @@ function logClick(e, button) {
 			getNumber();
 			operate(operator);
 			displaySecond.innerText += " " + displayInitial.innerText;
-			displayInitial.innerText = "=" + a;
+			displayInitial.innerText = "= " + a;
 			decimalEntered = false;
 			operatorArr = [];
 			break;
-		case displayInitial.innerText === "0" && button.innerText !== "0":
-			displayInitial.innerText = button.innerText;
+		case displayInitial.innerText === "0":
+			if (button.innerText !== "0") {
+				displayInitial.innerText = button.innerText;
+			} else if ((button.innerText = "0")) {
+				return;
+			}
 			break;
 		default:
 			if (displayInitial.innerText.charAt(0) === "=") {
@@ -206,12 +228,12 @@ function operate(operatorArr) {
 		case operatorArr[0] === "-":
 			answer = a - b;
 			break;
-		case operatorArr[0] === "*":
+		case operatorArr[0] === "×":
 			answer = a * b;
 			break;
-		case operatorArr[0] === "/":
+		case operatorArr[0] === "÷":
 			if (b === 0) {
-				console.error("Dividing by 0 is undefined");
+				alert("Dividing by 0 is undefined");
 			}
 			answer = a / b;
 			break;
@@ -267,7 +289,7 @@ function getNumber() {
 	} else {
 		if (displayInitial.innerText.includes(".")) {
 			b = parseFloat(displayInitial.innerText);
-		} else {
+		} else if (b === undefined) {
 			b = parseInt(displayInitial.innerText);
 		}
 	}
