@@ -280,6 +280,10 @@ function removeLastChar(e) {
 }
 
 function getNumber() {
+	if (displayInitial.innerText.includes("=")) {
+		return;
+	}
+
 	if (a === undefined) {
 		if (displayInitial.innerText.includes(".")) {
 			a = parseFloat(displayInitial.innerText);
