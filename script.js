@@ -179,13 +179,14 @@ function logClick(e, button) {
 
 		//PROTO PERCENT FUNC
 		case button.id === "percent":
-			displayInitial.innerText += "%";
-			getNumber();
-			if (a !== undefined) {
-				b = (b / 100) * a;
-			} else {
-				a = a / 100;
+			if (a === undefined) {
+				a = parseInt(displayInitial.innerText) / 100;
+			} else if (b === undefined) {
+				b = (parseInt(displayInitial.innerText) / 100) * a;
 			}
+
+			displayInitial.innerText += "%";
+			// getNumber();
 			console.log(a);
 			console.log(b);
 			break;
