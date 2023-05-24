@@ -178,18 +178,17 @@ function logClick(e, button) {
 			break;
 
 		//PROTO PERCENT FUNC
-		case button.id === "percent":
-			if (a === undefined) {
-				a = parseInt(displayInitial.innerText) / 100;
-			} else if (b === undefined) {
-				b = (parseInt(displayInitial.innerText) / 100) * a;
-			}
+		// case button.id === "percent":
+		// 	if (a === undefined) {
+		// 		a = parseInt(displayInitial.innerText) / 100;
+		// 	} else if (b === undefined) {
+		// 		b = (parseInt(displayInitial.innerText) / 100) * a;
+		// 	}
 
-			displayInitial.innerText += "%";
-			// getNumber();
-			console.log(a);
-			console.log(b);
-			break;
+		// 	displayInitial.innerText += "%";
+		// 	console.log(a);
+		// 	console.log(b);
+		// 	break;
 		//END OF PROTO
 		case button.id === "equals":
 			if (
